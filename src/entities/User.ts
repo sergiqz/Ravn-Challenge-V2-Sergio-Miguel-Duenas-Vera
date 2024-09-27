@@ -1,5 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
-import 'reflect-metadata'
+
+// Definir los tipos de roles posibles
+export enum UserRole {
+  CLIENT = 'client',
+  MANAGER = 'manager',
+}
 
 @Entity()
 export class User {
@@ -11,4 +16,12 @@ export class User {
 
   @Column()
   password!: string
+
+  // Aquí añadimos el campo de roles, con valor por defecto "client"
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.CLIENT,
+  })
+  role!: UserRole
 }
