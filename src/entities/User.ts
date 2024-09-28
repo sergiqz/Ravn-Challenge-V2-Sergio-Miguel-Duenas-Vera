@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Order } from './Order';
+import { Cart } from './Cart';
 
 export enum UserRole {
   CLIENT = 'client',
@@ -30,6 +31,10 @@ export class User {
   @OneToMany(() => Order, (order) => order.client)
   orders!: Order[];
 
+  @Field(() => [Cart])
+  @OneToMany(() => Cart, (cart) => cart.client)
+  carts!: Cart[];
+  
   @Field(() => UserRole)
   @Column({
     type: 'enum',

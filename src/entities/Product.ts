@@ -30,6 +30,10 @@ export class Product {
   image_url!: string;
 
   @Field()
+  @Column('int', { default: 0 })
+  stock!: number;
+
+  @Field()
   @Column({ default: true })
   isActive!: boolean
 }

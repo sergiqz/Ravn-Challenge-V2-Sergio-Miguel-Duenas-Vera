@@ -8,6 +8,7 @@ import authRouter from './routes/auth'
 import jwt from 'jsonwebtoken'
 import { MyContext } from './types/MyContext'
 import { OrderResolver } from './resolvers/OrderResolver';
+import { CartResolver } from './resolvers/CartResolver';
 import productsRouter from './routes/products';
 
 const app = express()
@@ -22,7 +23,7 @@ const PORT = process.env.PORT || 4000
 AppDataSource.initialize()
   .then(async () => {
     const schema = await buildSchema({
-      resolvers: [ProductResolver, OrderResolver],
+      resolvers: [ProductResolver, OrderResolver, CartResolver],
     })
 
     const server = new ApolloServer({

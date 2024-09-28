@@ -3,6 +3,8 @@ import { Product } from '../entities/Product'
 import { Category } from '../entities/Category'
 import { AppDataSource } from '../data-source'
 import { isManager } from '../middlewares/isManager'
+import { getRepository } from 'typeorm';
+
 
 @Resolver()
 export class ProductResolver {
@@ -142,6 +144,30 @@ export class ProductResolver {
 
     return products
   }
-
   
+  @Query(() => Product, { nullable: true })
+  async getProductById(
+    @Arg('id', () => Int) id: number
+  ): Promise<Product | null> {
+    const productRepository = AppDataSource.getRepository(Product);
+    
+    const product = await productRepository.findOne({
+      where: { id },
+      relations: ['category'],
+    });
+  
+    if (!product) {
+      throw new Error('Product not found');
+    }
+  
+    return product;
+  }  
+
+  @Query(() => [Product])
+  async getProducts(): Promise<Product[]> {
+    const productRepository = AppDataSource.getRepository(Product);
+    const products = await productRepository.find();
+    return products;
+  }
+
 }
