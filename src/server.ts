@@ -7,21 +7,22 @@ import { ProductResolver } from './resolvers/ProductResolver'
 import authRouter from './routes/auth'
 import jwt from 'jsonwebtoken'
 import { MyContext } from './types/MyContext'
+import { OrderResolver } from './resolvers/OrderResolver';
+import productsRouter from './routes/products';
 
 const app = express()
-
 app.use(express.json())
-
-// Montar el router de autenticación en Express
+app.use('/api/products', productsRouter);
 app.use('/auth', authRouter)
+app.use('/uploads', express.static('uploads'));
+app.use('/api', productsRouter);
 
-// Puerto de la aplicación
 const PORT = process.env.PORT || 4000
 
 AppDataSource.initialize()
   .then(async () => {
     const schema = await buildSchema({
-      resolvers: [ProductResolver],
+      resolvers: [ProductResolver, OrderResolver],
     })
 
     const server = new ApolloServer({
@@ -32,17 +33,15 @@ AppDataSource.initialize()
     
         if (token) {
           try {
-            // Verificar el token y obtener los datos del usuario
             const decoded = jwt.verify(token, 'token_secret') as any
-            console.log('Decoded JWT:', decoded) // <-- Depuración para ver el token decodificado
-            req.user = decoded // Asignar el usuario decodificado al request
+            console.log('Decoded JWT:', decoded)
+            req.user = decoded
             return { req, res, user: decoded }
           } catch (err) {
             console.error('Invalid token', err)
           }
         }
     
-        // Si no hay token o es inválido, el usuario será null
         return { req, res, user: null }
       },
     })
@@ -50,10 +49,11 @@ AppDataSource.initialize()
     await server.start()
     server.applyMiddleware({ app, path: '/graphql' })
 
-    // Iniciar el servidor
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`)
       console.log(`🚀 GraphQL endpoint available at http://localhost:${PORT}/graphql`)
     })
   })
   .catch((error) => console.log('Error al conectar a la base de datos', error))
+
+export default app;

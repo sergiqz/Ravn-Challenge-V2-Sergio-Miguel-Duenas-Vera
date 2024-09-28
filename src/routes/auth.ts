@@ -7,28 +7,23 @@ import jwt from 'jsonwebtoken'
 
 const authRouter = Router()
 
-// Ruta solo accesible para Managers
 authRouter.get('/manager-only', verifyRole(UserRole.MANAGER), (req, res) => {
   res.json({ message: 'Esta ruta es solo para Managers' })
 })
 
-// Ruta solo accesible para Clients
 authRouter.get('/client-only', verifyRole(UserRole.CLIENT), (req, res) => {
   res.json({ message: 'Esta ruta es solo para Clients' })
 })
 
-// Ruta para registrar usuarios (signup)
 authRouter.post('/signup', async (req: Request, res: Response): Promise<Response> => {
   const { email, password, role } = req.body
   const userRepository = AppDataSource.getRepository(User)
 
-  // Verificar si el usuario ya existe
   const existingUser = await userRepository.findOneBy({ email })
   if (existingUser) {
     return res.status(400).json({ message: 'The user already exists' })
   }
 
-  // Crear un nuevo usuario
   const hashedPassword = await bcrypt.hash(password, 10)
   const userRole = role === UserRole.MANAGER ? UserRole.MANAGER : UserRole.CLIENT
 
@@ -53,13 +48,11 @@ authRouter.post('/signin', async (req: Request, res: Response): Promise<Response
     return res.status(400).json({ message: 'Invalid credentials' })
   }
 
-  // Aquí nos aseguramos de que el token contenga `userId` y `role`
   const token = jwt.sign({ userId: user.id, role: user.role }, 'token_secret', { expiresIn: '1h' })
 
   return res.json({ token })
 })
 
-// Ruta para cerrar sesión (signout)
 authRouter.post('/signout', (req: Request, res: Response): Response => {
   return res.json({ message: 'Logout successful' })
 })

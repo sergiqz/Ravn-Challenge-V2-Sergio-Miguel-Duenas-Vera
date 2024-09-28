@@ -2,7 +2,6 @@ import 'reflect-metadata'
 import { AppDataSource } from '../data-source'
 import { Category } from '../entities/Category'
 
-// Categorías que deseas agregar
 const categoriesData = [
   { name: 'Snacks' },
   { name: 'Bebidas' },
@@ -13,13 +12,11 @@ const categoriesData = [
 
 const createCategories = async () => {
   try {
-    // Inicializamos la conexión a la base de datos
     await AppDataSource.initialize()
     console.log('Conectado a la base de datos')
 
     const categoryRepository = AppDataSource.getRepository(Category)
 
-    // Insertamos las categorías en la base de datos
     for (const category of categoriesData) {
       const newCategory = categoryRepository.create(category)
       await categoryRepository.save(newCategory)

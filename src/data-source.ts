@@ -1,7 +1,8 @@
-import { DataSource } from 'typeorm'
-import { User } from './entities/User'
-import { Product } from './entities/Product'
-import { Category } from './entities/Category'
+import { DataSource } from 'typeorm';
+import { User } from './entities/User';
+import { Product } from './entities/Product';
+import { Category } from './entities/Category';
+import { Order } from './entities/Order';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -12,5 +13,5 @@ export const AppDataSource = new DataSource({
   database: 'snack_shop',
   synchronize: true,
   logging: true,
-  entities: [User, Product, Category],
-})
+  entities: [User, Product, Category, Order],
+});

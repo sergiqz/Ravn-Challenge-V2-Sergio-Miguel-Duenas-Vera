@@ -1,27 +1,40 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Field, ObjectType, registerEnumType } from 'type-graphql';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Order } from './Order';
 
-// Definir los tipos de roles posibles
 export enum UserRole {
   CLIENT = 'client',
   MANAGER = 'manager',
 }
 
+registerEnumType(UserRole, {
+  name: 'UserRole',
+  description: 'Roles de los usuarios',
+});
+
+@ObjectType()
 @Entity()
 export class User {
+  @Field()
   @PrimaryGeneratedColumn()
-  id!: number
+  id!: number;
 
+  @Field()
   @Column({ unique: true })
-  email!: string
+  email!: string;
 
   @Column()
-  password!: string
+  password!: string;
 
-  // Aquí añadimos el campo de roles, con valor por defecto "client"
+  @Field(() => [Order])
+  @OneToMany(() => Order, (order) => order.client)
+  orders!: Order[];
+
+  @Field(() => UserRole)
   @Column({
     type: 'enum',
     enum: UserRole,
     default: UserRole.CLIENT,
   })
-  role!: UserRole
+  role!: UserRole;
 }

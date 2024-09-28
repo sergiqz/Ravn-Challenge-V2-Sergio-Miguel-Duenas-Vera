@@ -8,7 +8,7 @@ import { isManager } from '../middlewares/isManager'
 export class ProductResolver {
 
   @Mutation(() => Product)
-  @UseMiddleware(isManager) // Solo los managers pueden crear productos
+  @UseMiddleware(isManager)
   async createProduct(
     @Arg('name') name: string,
     @Arg('price') price: number,
@@ -18,13 +18,11 @@ export class ProductResolver {
     const productRepository = AppDataSource.getRepository(Product)
     const categoryRepository = AppDataSource.getRepository(Category)
 
-    // Buscar la categoría asociada
     const category = await categoryRepository.findOne({ where: { id: categoryId } })
     if (!category) {
       throw new Error('Category not found')
     }
 
-    // Crear el producto
     const product = productRepository.create({
       name,
       price,
@@ -32,14 +30,33 @@ export class ProductResolver {
       category,
     })
 
-    // Guardar el producto en la base de datos
     await productRepository.save(product)
 
     return product
   }
 
   @Mutation(() => Product)
-  @UseMiddleware(isManager) // Solo los managers pueden actualizar productos
+  @UseMiddleware(isManager)
+  async disableProduct(
+    @Arg('id', () => Int) id: number,
+    @Arg('isActive', () => Boolean) isActive: boolean
+  ): Promise<Product> {
+    const productRepository = AppDataSource.getRepository(Product)
+
+    const product = await productRepository.findOne({ where: { id } })
+    if (!product) {
+      throw new Error('Product not found')
+    }
+
+    product.isActive = isActive
+
+    await productRepository.save(product)
+
+    return product
+  }
+
+  @Mutation(() => Product)
+  @UseMiddleware(isManager)
   async updateProduct(
     @Arg('id', () => Int) id: number,
     @Arg('name', { nullable: true }) name?: string,
@@ -50,28 +67,23 @@ export class ProductResolver {
     const productRepository = AppDataSource.getRepository(Product)
     const categoryRepository = AppDataSource.getRepository(Category)
 
-    // Buscar el producto por ID
     const product = await productRepository.findOne({ where: { id } })
     if (!product) {
       throw new Error('Product not found')
     }
 
-    // Actualizar el nombre si se proporciona
     if (name) {
       product.name = name
     }
 
-    // Actualizar el precio si se proporciona
     if (price) {
       product.price = price
     }
 
-    // Actualizar la descripción si se proporciona
     if (description) {
       product.description = description
     }
 
-    // Si se proporciona categoryId, actualizar la categoría del producto
     if (categoryId) {
       const category = await categoryRepository.findOne({ where: { id: categoryId } })
       if (!category) {
@@ -80,31 +92,26 @@ export class ProductResolver {
       product.category = category
     }
 
-    // Guardar los cambios en la base de datos
     await productRepository.save(product)
 
     return product
   }
 
-  // Mutación para eliminar un producto
-  @Mutation(() => Boolean) // Devolveremos `true` si el producto se elimina con éxito
-  @UseMiddleware(isManager) // Solo los managers pueden eliminar productos
+  @Mutation(() => Boolean)
+  @UseMiddleware(isManager)
   async deleteProduct(@Arg('id', () => Int) id: number): Promise<boolean> {
     const productRepository = AppDataSource.getRepository(Product)
 
-    // Buscar el producto por ID
     const product = await productRepository.findOne({ where: { id } })
     if (!product) {
-      throw new Error('Product not found') // Si no encuentra el producto, lanza error
+      throw new Error('Product not found')
     }
 
-    // Eliminar el producto de la base de datos
     await productRepository.remove(product)
 
-    return true // Devolvemos `true` indicando que la operación fue exitosa
+    return true
   }
 
-  // List products with pagination
   @Query(() => [Product])
   async listProducts(
     @Arg('page', () => Int, { defaultValue: 1 }) page: number,
@@ -121,7 +128,6 @@ export class ProductResolver {
     return products
   }
 
-  // Search for products by category
   @Query(() => [Product])
   async searchProductsByCategory(
     @Arg('categoryName') categoryName: string
