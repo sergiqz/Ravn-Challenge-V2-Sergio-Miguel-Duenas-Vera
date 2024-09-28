@@ -1,39 +1,37 @@
-import { Arg, Int, Mutation, Resolver } from 'type-graphql';
+import { Arg, Ctx, Int, Mutation, Resolver, Query, UseMiddleware } from 'type-graphql';
 import { AppDataSource } from '../data-source';
 import { Order } from '../entities/Order';
 import { Product } from '../entities/Product';
 import { User } from '../entities/User';
+import { MyContext } from "../types/MyContext";
+import { isAuth } from '../middlewares/isAuthMiddleware'
 
 @Resolver()
 export class OrderResolver {
 
   @Mutation(() => Order)
   async buyProducts(
-    @Arg('clientId', () => Int) clientId: number, // El ID del cliente que realiza la compra
-    @Arg('productIds', () => [Int]) productIds: number[] // Los IDs de los productos que desea comprar
+    @Arg('clientId', () => Int) clientId: number,
+    @Arg('productIds', () => [Int]) productIds: number[]
   ): Promise<Order> {
     const orderRepository = AppDataSource.getRepository(Order);
     const productRepository = AppDataSource.getRepository(Product);
     const userRepository = AppDataSource.getRepository(User);
-
-    // Obtener el cliente
     const client = await userRepository.findOne({ where: { id: clientId } });
+
     if (!client) {
       throw new Error('Client not found');
     }
 
-    // Obtener los productos
     const products = await productRepository.findByIds(productIds);
     if (products.length !== productIds.length) {
       throw new Error('Some products not found');
     }
 
-    // Verificar si hay suficiente stock para cada producto
     for (const product of products) {
       if (product.stock <= 0) {
         throw new Error(`Product ${product.name} is out of stock`);
       }
-      // Aquí puedes reducir el stock si lo deseas
       product.stock -= 1;
       await productRepository.save(product);
     }
@@ -49,4 +47,23 @@ export class OrderResolver {
 
     return order;
   }
+
+  @Query(() => [Order])
+  @UseMiddleware(isAuth)
+  async myOrders(@Ctx() { req }: MyContext): Promise<Order[]> {
+    const userId = req.session.userId;
+  
+    if (!userId) {
+      throw new Error("Not authenticated");
+    }
+  
+    const orderRepository = AppDataSource.getRepository(Order);
+    const orders = await orderRepository.find({
+      where: { client: { id: userId } },
+      relations: ['client', 'products'],
+    });
+    
+    return orders;
+  }
+
 }

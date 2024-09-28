@@ -1,9 +1,12 @@
-import { Arg, Int, Mutation, Query, Resolver, UseMiddleware  } from 'type-graphql'
+import { Arg, Ctx, Int, Mutation, Query, Resolver, UseMiddleware  } from 'type-graphql'
 import { Product } from '../entities/Product'
+import { ProductLike } from '../entities/ProductLike'
 import { Category } from '../entities/Category'
 import { AppDataSource } from '../data-source'
 import { isManager } from '../middlewares/isManager'
 import { getRepository } from 'typeorm';
+import { MyContext } from "../types/MyContext";
+
 
 
 @Resolver()
@@ -112,6 +115,31 @@ export class ProductResolver {
     await productRepository.remove(product)
 
     return true
+  }
+
+  @Mutation(() => Boolean)
+  async likeProduct(
+    @Arg('productId') productId: number,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    if (!req.session?.userId) {
+      throw new Error('User not authenticated');
+    }
+  
+    const userId = req.session.userId;
+  
+    const like = await AppDataSource.getRepository(ProductLike).findOne({
+      where: { userId, productId },
+    });
+  
+    if (like) {
+      await AppDataSource.getRepository(ProductLike).remove(like);
+      return false;
+    } else {
+      const newLike = AppDataSource.getRepository(ProductLike).create({ userId, productId });
+      await AppDataSource.getRepository(ProductLike).save(newLike);
+      return true;
+    }
   }
 
   @Query(() => [Product])
