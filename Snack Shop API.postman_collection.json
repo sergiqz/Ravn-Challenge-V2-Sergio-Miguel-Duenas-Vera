@@ -1,0 +1,453 @@
+{
+	"info": {
+		"_postman_id": "9a5fdf9c-d63a-44d3-8894-4ce39017f9b2",
+		"name": "Snack Shop API",
+		"description": "Welcome to my Snack Shop API project for Ravn.  \nI have divided it into two parts: Authentication and Shop.  \nThe Shop section is further divided based on roles: Manager Role, Client Role, and Free access.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9642908"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"CLIENT\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/signup",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/signin",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/signout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"signout"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "## **Signup**\n\n- **Method**: `POST`\n    \n- **Endpoint**: /auth/signup\n    \n- graphql `{ \"email\": \"sergiqz2@example.com\", \"password\": \"password123\", \"role\": \"client\"}`\n    \n\n## **Signin**\n\n- **Method**: `POST`\n    \n- **Endpoint**: /auth/signin\n    \n- graphql `{ \"email\": \"sergiqz@gmail.com\", \"password\": \"password123\"}`\n    \n\n## **Signout**\n\n- **Method**: `POST`\n    \n- **Endpoint**:/auth/signout"
+		},
+		{
+			"name": "Shop",
+			"item": [
+				{
+					"name": "Manager ROL",
+					"item": [
+						{
+							"name": "Create Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <your-token>"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "\n    mutation {\n      createProduct(\n        name: \"New Product\"\n        price: 20.99\n        description: \"A detailed description of the product\"\n        categoryId: 1\n      ) {\n        id\n        name\n        price\n        description\n        category {\n          id\n          name\n        }\n      }\n    }\n    "
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <your-token>"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "\n    mutation {\n      updateProduct(\n        id: 1\n        name: \"Updated Product Name\"\n        price: 15.99\n      ) {\n        id\n        name\n        price\n        description\n      }\n    }\n    "
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <your-token>"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "\n    mutation {\n      deleteProduct(id: 1)\n    }\n    "
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Disable Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <your-token>"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "\n    mutation {\n      disableProduct(id: 1, isActive: false) {\n        id\n        name\n        isActive\n      }\n    }\n    "
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show client orders",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInJvbGUiOiJtYW5hZ2VyIiwiaWF0IjoxNzI3NjM4NDkyLCJleHAiOjE3Mjc2ODE2OTJ9.NqFgDYTAtwWYoMOgCYeMuhpZ184NCjbUWMRx0X7QJsI",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query ShowClientOrders {\r\n  showClientOrders(clientId: 1) {\r\n    id\r\n    orderDate\r\n    status\r\n    products {\r\n      id\r\n      name\r\n      price\r\n    }\r\n  }\r\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Upload images per product",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation {\r\n  updateProduct(\r\n    id: 1,\r\n    name: \"lays\",\r\n    price: 3.99,\r\n    description: \"potato\",\r\n    categoryId: 2\r\n  ) {\r\n    id\r\n    name\r\n    price\r\n    description\r\n    category {\r\n      id\r\n      name\r\n    }\r\n  }\r\n}\r\n",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "## **Create products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql\n    \n- `mutation { createProduct( name: \"New Product\" price: 20.99 description: \"A detailed description of the product\" categoryId: 1 ) { id name price description category { id name } }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Update products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `mutation { updateProduct( id: 1 name: \"Updated Product Name\" price: 15.99 ) { id name price description }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Delete products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `mutation { deleteProduct(id: 1)}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Disable products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `mutation { disableProduct(id: 1, isActive: false) { id name isActive }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Show client orders**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `ShowClientOrders { showClientOrders(clientId: 1) { id orderDate status products { id name price } }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Upload images per product**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `{ updateProduct( id: 3, name: \"lays\", price: 3.99, description: \"potato\", categoryId: 2 ) { id name price description category { id name } }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`"
+				},
+				{
+					"name": "Client ROL",
+					"item": [
+						{
+							"name": "See Products",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <your-token>"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "\n    query {\n      listProducts(page: 1, limit: 10) {\n        id\n        name\n        price\n        description\n      }\n    }\n    "
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "See the product details",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "{\r\n  getProductById(id: 5) {\r\n    id\r\n    name\r\n    price\r\n    description\r\n    category {\r\n      name\r\n    }\r\n  }\r\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Buy products",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation {\r\n  buyProducts(clientId: 4, productIds: [5]) {\r\n    id\r\n    client {\r\n      id\r\n    }\r\n    products {\r\n      id\r\n      name\r\n      price\r\n    }\r\n    orderDate\r\n    status\r\n  }\r\n}\r\n",
+										"variables": ""
+									}
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add to Cart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"clientId\": 1,\n  \"productIds\": [1, 2, 3]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Like Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <your-token>"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "\n    mutation {\n      likeProduct(productId: 1)\n    }\n    "
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/graphql",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"graphql"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show my order",
+							"request": {
+								"method": "POST",
+								"header": []
+							},
+							"response": []
+						}
+					],
+					"description": "## **See Products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- **Graphql** `query { listProducts(page: 1, limit: 10) { id name price description } }`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **See the product details**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- **Graphql** `{ getProductById(id: 5) { id name price description category { name } }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Buy products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `{ buyProducts(clientId: 4, productIds: [5]) { id client { id } products { id name price } orderDate status }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Add to Cart**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `{ addToCart(clientId: 2, productIds: [2, 7, 8]) { id client { id } products { id name price } }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Like Product**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `{likeProduct(productId: 1)}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Show my order**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `{  myOrders {    id    orderDate  }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`"
+				},
+				{
+					"name": "free",
+					"item": [
+						{
+							"name": "See Products",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "\r\n    query {\r\n      listProducts(page: 1, limit: 10) {\r\n        id\r\n        name\r\n        price\r\n        description\r\n      }\r\n    }\r\n    ",
+										"variables": ""
+									}
+								}
+							},
+							"response": []
+						}
+					],
+					"description": "## **See Products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- **Graphql** `query { listProducts(page: 1, limit: 10) { id name price description } }`"
+				}
+			],
+			"description": "# 1\\. Manager ROL\n\n## **Create products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql\n    \n- `mutation { createProduct( name: \"New Product\" price: 20.99 description: \"A detailed description of the product\" categoryId: 1 ) { id name price description category { id name } }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Update products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `mutation { updateProduct( id: 1 name: \"Updated Product Name\" price: 15.99 ) { id name price description }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Delete products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `mutation { deleteProduct(id: 1)}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Disable products**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `mutation { disableProduct(id: 1, isActive: false) { id name isActive }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Show client orders**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `ShowClientOrders { showClientOrders(clientId: 1) { id orderDate status products { id name price } }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`\n        \n\n## **Upload images per product**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/graphql`\n    \n- graphql `{ updateProduct( id: 3, name: \"lays\", price: 3.99, description: \"potato\", categoryId: 2 ) { id name price description category { id name } }}`\n    \n- **Headers**:\n    \n    - Content-Type: `application/json`\n        \n    - Authorization: `Bearer`"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:4000"
+		}
+	]
+}
