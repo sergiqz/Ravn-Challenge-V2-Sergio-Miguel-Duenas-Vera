@@ -33,27 +33,24 @@ describe('OrderResolver - buyProducts', () => {
   });
 
   it('should throw an error if product is out of stock', async () => {
-    // Simula un cliente válido
     const client = new User();
     client.id = 1;
     jest.spyOn(AppDataSource.getRepository(User), 'findOne').mockResolvedValue(client);
   
-    // Simula productos donde uno está sin stock
     const productInStock = new Product();
     productInStock.id = 1;
     productInStock.name = 'Product 2';
     productInStock.price = 100;
     productInStock.stock = 5;
-    productInStock.description = 'This is a sample description';  // <--- Agrega descripción aquí
+    productInStock.description = 'This is a sample description';
   
     const productOutOfStock = new Product();
     productOutOfStock.id = 2;
     productOutOfStock.name = 'Product 1';
     productOutOfStock.price = 50;
     productOutOfStock.stock = 0;
-    productOutOfStock.description = 'This product is out of stock';  // <--- Agrega descripción aquí
+    productOutOfStock.description = 'This product is out of stock';
   
-    // Simula que `findByIds` devuelve los productos solicitados
     jest.spyOn(AppDataSource.getRepository(Product), 'findByIds').mockResolvedValue([productInStock, productOutOfStock]);
   
     await expect(
@@ -62,22 +59,19 @@ describe('OrderResolver - buyProducts', () => {
   });  
 
   it('should create an order when all products are available', async () => {
-    // Simula un cliente válido
     const client = new User();
     client.id = 1;
     jest.spyOn(AppDataSource.getRepository(User), 'findOne').mockResolvedValue(client);
   
-    // Simula productos válidos y con stock
     const product = new Product();
     product.id = 1;
     product.name = 'Product 1';
     product.price = 100;
     product.stock = 10;
-    product.description = 'This is a test product';  // <--- Agrega descripción aquí
+    product.description = 'This is a test product';
   
     jest.spyOn(AppDataSource.getRepository(Product), 'findByIds').mockResolvedValue([product]);
   
-    // Simula guardar la orden
     const order = new Order();
     order.id = 1;
     jest.spyOn(AppDataSource.getRepository(Order), 'create').mockReturnValue(order);
