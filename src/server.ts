@@ -67,8 +67,8 @@ AppDataSource.initialize()
     server.applyMiddleware({ app, path: '/graphql' });
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`🚀 GraphQL endpoint available at http://localhost:${PORT}/graphql`);
+      console.log(`Server running on port ${PORT}`);
+      console.log(`GraphQL endpoint available at http://localhost:${PORT}/graphql`);
     });
   })
   .catch((error) => console.log('Error al conectar a la base de datos', error));
