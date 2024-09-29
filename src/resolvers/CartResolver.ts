@@ -1,13 +1,15 @@
-import { Arg, Int, Mutation, Resolver } from 'type-graphql';
+import { Arg, Int, Mutation, Resolver, UseMiddleware } from 'type-graphql';
 import { AppDataSource } from '../data-source';
 import { Cart } from '../entities/Cart';
 import { Product } from '../entities/Product';
 import { User } from '../entities/User';
+import { isAuth } from '../middlewares/isAuthMiddleware'
 
 @Resolver()
 export class CartResolver {
 
   @Mutation(() => Cart)
+  @UseMiddleware(isAuth)
   async addToCart(
     @Arg('clientId', () => Int) clientId: number,
     @Arg('productIds', () => [Int]) productIds: number[]

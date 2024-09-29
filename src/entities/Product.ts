@@ -30,7 +30,7 @@ export class Product {
   @OneToMany(() => ProductLike, (like) => like.product)
   likes!: ProductLike[];
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
   image_url!: string;
 

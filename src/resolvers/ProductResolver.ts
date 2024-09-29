@@ -147,15 +147,15 @@ export class ProductResolver {
     @Arg('page', () => Int, { defaultValue: 1 }) page: number,
     @Arg('limit', () => Int, { defaultValue: 10 }) limit: number
   ): Promise<Product[]> {
-    const offset = (page - 1) * limit
-    const productRepository = AppDataSource.getRepository(Product)
+    const offset = (page - 1) * limit;
+    const productRepository = AppDataSource.getRepository(Product);
 
     const products = await productRepository.find({
       skip: offset,
       take: limit,
-    })
+    });
 
-    return products
+    return products;
   }
 
   @Query(() => [Product])

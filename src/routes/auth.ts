@@ -48,7 +48,7 @@ authRouter.post('/signin', async (req: Request, res: Response): Promise<Response
     return res.status(400).json({ message: 'Invalid credentials' })
   }
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, 'token_secret', { expiresIn: '1h' })
+  const token = jwt.sign({ userId: user.id, role: user.role }, 'token_secret', { expiresIn: '12h' })
 
   return res.json({ token })
 })

@@ -2,7 +2,7 @@ import { MiddlewareFn } from 'type-graphql'
 import { MyContext } from '../types/MyContext'
 
 export const isManager: MiddlewareFn<MyContext> = async ({ context }, next) => {
-  const { user } = context.req
+  const { user } = context
 
   console.log("User in middleware:", user)
 

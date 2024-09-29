@@ -5,6 +5,7 @@ import { Product } from '../entities/Product';
 import { User } from '../entities/User';
 import { MyContext } from "../types/MyContext";
 import { isAuth } from '../middlewares/isAuthMiddleware'
+import { isManager } from '../middlewares/isManager'
 
 @Resolver()
 export class OrderResolver {
@@ -63,6 +64,27 @@ export class OrderResolver {
       relations: ['client', 'products'],
     });
     
+    return orders;
+  }
+
+  @Query(() => [Order])
+  @UseMiddleware(isAuth, isManager)
+  async showClientOrders(
+    @Arg('clientId', () => Int) clientId: number
+  ): Promise<Order[]> {
+    const userRepository = AppDataSource.getRepository(User);
+    const client = await userRepository.findOne({ where: { id: clientId } });
+
+    if (!client) {
+      throw new Error('Client not found');
+    }
+
+    const orderRepository = AppDataSource.getRepository(Order);
+    const orders = await orderRepository.find({
+      where: { client: { id: clientId } },
+      relations: ['client', 'products'],
+    });
+
     return orders;
   }
 
