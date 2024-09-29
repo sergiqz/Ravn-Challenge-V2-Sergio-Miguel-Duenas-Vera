@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "9a5fdf9c-d63a-44d3-8894-4ce39017f9b2",
 		"name": "Snack Shop API",
-		"description": "API Documentation for Snack Shop built with Node.js, Express, TypeScript, PostgreSQL, and GraphQL. It also includes Product-related mutations and queries from ProductResolver.",
+		"description": "Welcome to my Snack Shop API project for Ravn.  \nI have divided it into two parts: Authentication and Shop.  \nThe Shop section is further divided based on roles: Manager Role, Client Role, and Free access.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "9642908"
 	},
@@ -82,7 +82,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"description": "## **Signup**\n\n- **Method**: `POST`\n    \n- **Endpoint**: /auth/signup\n    \n- graphql `{ \"email\": \"sergiqz2@example.com\", \"password\": \"password123\", \"role\": \"client\"}`\n    \n\n## **Signin**\n\n- **Method**: `POST`\n    \n- **Endpoint**: /auth/signin\n    \n- graphql `{ \"email\": \"sergiqz@gmail.com\", \"password\": \"password123\"}`\n    \n\n## **Signout**\n\n- **Method**: `POST`\n    \n- **Endpoint**:/auth/signout"
 		},
 		{
 			"name": "Shop",
